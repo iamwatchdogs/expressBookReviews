@@ -40,9 +40,17 @@ public_users.get("/", async function (req, res) {
 });
 
 // Get book details based on ISBN
-public_users.get("/isbn/:isbn", function (req, res) {
+public_users.get("/isbn/:isbn", async function (req, res) {
   const isbn = req.params.isbn;
-  res.send(books[isbn]);
+  try {
+    const response = await axios.get(`URL_TO_GET_BOOK_BY_ISBN/${isbn}`); // Replace with the actual URL or API endpoint
+    const book = response.data;
+    res.status(200).json(book);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching book details", error: error.message });
+  }
 });
 
 // Get book details based on author
