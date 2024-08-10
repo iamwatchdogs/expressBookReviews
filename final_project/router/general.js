@@ -54,16 +54,18 @@ public_users.get("/isbn/:isbn", async function (req, res) {
 });
 
 // Get book details based on author
-public_users.get("/author/:author", function (req, res) {
+public_users.get("/author/:author", async function (req, res) {
   const author = req.params.author;
-  let book = [];
-
-  Object.keys(books).forEach((i) => {
-    if (books[i].author.toLowerCase() == author.toLowerCase()) {
-      book.push(books[i]);
-    }
-  });
-  res.send(book);
+  try {
+    const response = await axios.get(`URL_TO_GET_BOOKS_BY_AUTHOR/${author}`);
+    const booksByAuthor = response.data;
+    res.status(200).json(booksByAuthor);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching books by author",
+      error: error.message,
+    });
+  }
 });
 
 // Get all books based on title
